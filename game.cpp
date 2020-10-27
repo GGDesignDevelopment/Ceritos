@@ -97,19 +97,59 @@ void processKey(int key)
         game_over = true;
         break;
     case 4: // left
-        current_y -= 1;
+        if (current_y == 0 && align == 1)
+        {
+            current_y = NUM_CELLS - 1;
+        } else if (current_y == 0 && align == -1)
+        {
+            current_y = NUM_CELLS;
+        } else
+        {
+            current_y--;
+        }             
+        
         break;
     case 6: // right
-        current_y += 1;
+        if ((current_y == NUM_CELLS - 1 && align == 1) || (current_y == NUM_CELLS && align == -1))
+        {
+            current_y = 0;
+        } else
+        {
+            current_y++;
+        }
+                
         break;
     case 8: // up
-        current_x -= 1;
+        if (current_x == 0 && align == -1)
+        {
+            current_x = NUM_CELLS - 1;
+        } else if (current_x == 0 && align == 1)
+        {
+            current_x = NUM_CELLS;
+        } else
+        {
+            current_x--;
+        } 
         break;
     case 5: // down
-        current_x += 1;
+        if ((current_x == NUM_CELLS - 1 && align == -1) || (current_x == NUM_CELLS && align == 1))
+        {
+            current_x = 0;
+        } else
+        {
+            current_x++;
+        }
         break;
     case 7: // rotate
         align *= -1;
+        if (current_y == NUM_CELLS)
+        {
+            current_y--;
+        } else if (current_x == NUM_CELLS)
+        {
+            current_x--;
+        }
+                
         break;
     case 9: // select
         if (align == 1)
@@ -134,7 +174,10 @@ int main()
     while (!game_over)
     {
         display();
-        
+        cout << "Current position (" << current_x << "," << current_y << ")";
+        (align == 1) ? cout << " horizontal" : cout << " vertical";
+        cout << endl;
+
         cin >> key;
         processKey(key);        
     }
