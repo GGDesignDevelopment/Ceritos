@@ -4,7 +4,7 @@ using std::cout;
 using std::endl;
 using std::cin;
 
-const int NUM_CELLS = 10;
+const int NUM_CELLS = 2;
 const int LINES = NUM_CELLS + 1;
 
 bool game_over = false;
@@ -13,6 +13,7 @@ bool vertical_lines[NUM_CELLS][LINES];
 int current_x = 0;
 int current_y = 0;
 int align = 1; // horizontal
+int squares = 0;
 
 void init () 
 {
@@ -74,7 +75,7 @@ void display ()
         } 
     }
 
-    cout << NUM_CELLS << "  ";
+    cout << NUM_CELLS << "   ";
     for (int i = 0; i < NUM_CELLS; i++)
     {
         if (horizontal_lines[NUM_CELLS][i])
@@ -154,12 +155,30 @@ void processKey(int key)
     case 9: // select
         if (align == 1)
         {                   
-            horizontal_lines[current_x][current_y] = true;
+            horizontal_lines[current_x][current_y] = true;            
+            if (current_x > 0 && horizontal_lines[current_x - 1][current_y] && vertical_lines[current_x - 1][current_y] && vertical_lines[current_x - 1][current_y + 1])
+            {
+                squares++;
+            }                
+        
+            if (current_x < NUM_CELLS && horizontal_lines[current_x + 1][current_y] && vertical_lines[current_x][current_y] && vertical_lines[current_x][current_y + 1])
+            {
+                squares++;
+            }                
         } 
         else
         {
             vertical_lines[current_x][current_y] = true;
-        }        
+            if (current_y > 0 && vertical_lines[current_x][current_y - 1] && horizontal_lines[current_x][current_y -1] && horizontal_lines[current_x + 1][current_y - 1])
+            {
+                squares++;
+            }                
+
+            if (current_y < NUM_CELLS && vertical_lines[current_x][current_y + 1] && horizontal_lines[current_x][current_y] && horizontal_lines[current_x + 1][current_y])
+            {
+                squares++;
+            }                
+       }        
         break;
     default:
         break;
@@ -177,9 +196,18 @@ int main()
         cout << "Current position (" << current_x << "," << current_y << ")";
         (align == 1) ? cout << " horizontal" : cout << " vertical";
         cout << endl;
+        cout << "Squares: " << squares << endl;
 
         cin >> key;
-        processKey(key);        
+        processKey(key); 
+        
+        if(squares == NUM_CELLS * NUM_CELLS) 
+        {
+            display();
+            cout << "Squares: " << squares << endl;
+            cout << "Game Over!" << endl;
+            game_over = true;
+        }
     }
     
     return 0;
